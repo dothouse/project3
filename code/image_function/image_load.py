@@ -50,3 +50,22 @@ def load_and_resize_images(food_path_list, food_list, img_size=(150, 150), pic_c
             future.result()
 
     return np.array(image_list, dtype=np.float32), np.array(target_list), except_list
+
+def convert_to_threshold(image_list, threshold_value=125, max_value=255, flags = cv2.THRESH_BINARY):
+    thresholded_images = []
+
+    for i in range(image_list.shape[0]):
+        img = image_list[i]
+
+        if len(img.shape) == 3 and img.shape[2] == 3:
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+        img = img.astype(np.uint8)
+
+        _, binary_img = cv2.threshold(img, 0, max_value, flags)
+
+        thresholded_images.append(binary_img)
+
+    # 리스트를 numpy 배열로 변환
+    thresholded_images = np.array(thresholded_images)
+    return thresholded_images
